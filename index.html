@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Vaccaria Incognita</title>
+  <meta name="description" content="El salvaje Oeste dibujado a mano por código: Monument Valley, un pueblo de frontera, el tren de vapor, un rancho, una mina de oro y diez secretos escondidos.">
+  <meta name="author" content="Pau Morató Sebastià">
+  <meta name="theme-color" content="#26160e">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Vaccaria Incognita">
+  <meta property="og:description" content="La tierra de los vaqueros: Monument Valley, un pueblo de frontera, el tren de vapor y diez secretos escondidos. Recórrela, espera a que se ponga el sol… y encuéntralos.">
+  <meta property="og:url" content="https://explore-vaccaria-incognita.github.io/">
+  <meta property="og:image" content="https://explore-vaccaria-incognita.github.io/compartir.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="css/estilos.css?v=20261102w">
+</head>
+<body>
+  <canvas id="lienzo" aria-label="El Oeste: Monument Valley, el pueblo de Vaccaria, la estación, el rancho, la mina y el campamento. Arrastra o usa la rueda para recorrerlo."></canvas>
+  <div class="grano" aria-hidden="true"></div>
+
+  <div class="cargando" id="cargando" aria-live="polite"><span class="cargando-tinta" aria-hidden="true"></span><span>Ensillando los caballos…</span></div>
+
+  <header class="marca">
+    <h1 class="titulo">Vaccaria <em><span class="pre">in</span>cognita</em></h1>
+    <p class="sub">The Old West · La tierra de los vaqueros</p>
+  </header>
+
+  <button class="b-cuaderno" id="b-cuaderno" type="button" aria-expanded="false" aria-controls="cuaderno">
+    <span class="b-fila"><span class="b-etq">Diario · Secretos</span><span class="b-cont" id="contador">00/10</span></span>
+    <span class="segmentos" id="segmentos" aria-hidden="true"></span>
+  </button>
+
+  <button class="b-sonido" id="b-sonido" type="button" aria-pressed="false" aria-label="Sonido" title="Sonido">♪</button>
+
+  <div class="hud hud-izq" id="hud" aria-hidden="true">
+    <div><span>Lugar</span><b class="h-lugar" id="h-lugar">Monument Valley</b></div>
+    <div><span>Hora</span><b id="h-hora">10:30 · día</b></div>
+    <div><span>Rastro</span><b class="barras" id="h-rastro"><i></i><i></i><i></i><i></i><i></i></b></div>
+  </div>
+  <div class="hud hud-der"><span id="ayuda">Arrastra o usa la rueda para recorrer el Oeste</span></div>
+  <button class="b-tinta" id="b-tinta" type="button" aria-pressed="false" aria-label="Tinta" title="Ver con tinta" hidden><i aria-hidden="true"></i></button>
+  <div class="teclas" id="teclas" aria-hidden="true"></div>
+
+  <aside class="cuaderno" id="cuaderno" aria-hidden="true" aria-labelledby="cuaderno-titulo">
+    <div class="c-cabeza">
+      <div>
+        <p class="c-etq">Diario de un forastero</p>
+        <h2 id="cuaderno-titulo">Los secretos del Oeste</h2>
+      </div>
+      <button class="c-cerrar" id="cerrar-cuaderno" type="button" aria-label="Cerrar el diario">✕</button>
+    </div>
+    <p class="c-intro">Diez secretos repartidos entre Monument Valley y el campamento. Unos se ven; otros se tocan, se escriben… o se esperan mientras pasa el día.</p>
+    <ol class="lista" id="lista"></ol>
+    <p class="c-fuentes">Todo dibujado por código. Tipografías: Instrument Serif e IBM Plex Mono (OFL).</p>
+    <p class="c-credito" id="c-credito-linea" hidden>Un juego de <a id="c-credito" target="_blank" rel="noopener"><b id="c-credito-nombre"></b><span class="flecha"> ↗</span></a></p>
+    <div class="c-pie">
+      <button type="button" id="ver-final" class="c-boton" hidden>Volver a ver el final</button>
+      <button type="button" id="borrar" class="c-boton c-boton-tenue">Borrar progreso</button>
+    </div>
+  </aside>
+
+  <section class="tarjeta" id="tarjeta" aria-live="polite">
+    <div class="t-etq" id="t-etq"></div>
+    <h2 class="t-tit" id="t-tit"></h2>
+    <p class="t-txt" id="t-txt"></p>
+    <div class="t-pie" id="t-pie"></div>
+  </section>
+
+  <div class="aviso" id="aviso" role="status"></div>
+  <button class="saltar" id="saltar" type="button">Saltar <kbd>⌫</kbd></button>
+
+  <div class="intro" id="intro" hidden>
+    <div class="intro-caja">
+      <canvas class="intro-medalla" id="intro-medalla" aria-hidden="true"></canvas>
+      <h2>Vaccaria <em>incognita</em></h2>
+      <p class="intro-sub">The Old West · La tierra de los vaqueros</p>
+      <p>Entre las mesas rojas de Monument Valley hay un pueblo de frontera, una estación de tren, un rancho, una mina de oro y diez secretos. Recorre el camino, mira, toca… o quédate quieto mientras se pone el sol. Lo que encuentres quedará apuntado en tu diario.</p>
+      <button type="button" id="empezar">Entrar en el pueblo</button>
+    </div>
+  </div>
+
+  <div class="creditos" id="creditos" hidden role="dialog" aria-modal="true" aria-labelledby="creditos-nombre">
+    <div class="creditos-caja">
+      <p class="creditos-etq">El Oeste, dibujado por</p>
+      <h2 class="creditos-nombre" id="creditos-nombre"></h2>
+      <div class="creditos-linea" aria-hidden="true"></div>
+      <p class="creditos-txt">Gracias por cabalgar hasta el final.</p>
+      <div class="creditos-botones">
+        <a class="creditos-enlace" id="creditos-enlace" target="_blank" rel="noopener">Ver su LinkedIn <span aria-hidden="true">↗</span></a>
+        <button type="button" class="creditos-cerrar" id="creditos-cerrar">Seguir explorando</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/motor.js?v=20261102w"></script>
+  <script src="js/arte.js?v=20261102w"></script>
+  <script src="js/paisaje.js?v=20261102w"></script>
+  <script src="js/interfaz.js?v=20261102w"></script>
+  <script src="js/escenas.js?v=20261102w"></script>
+  <script src="js/huevos/01-ok-corral.js?v=20261102w"></script>
+  <script src="js/huevos/02-clavo-de-oro.js?v=20261102w"></script>
+  <script src="js/huevos/03-pony-express.js?v=20261102w"></script>
+  <script src="js/huevos/04-telegrafo.js?v=20261102w"></script>
+  <script src="js/huevos/05-rodadora.js?v=20261102w"></script>
+  <script src="js/huevos/06-vaqueros.js?v=20261102w"></script>
+  <script src="js/huevos/07-bisontes.js?v=20261102w"></script>
+  <script src="js/huevos/08-remaches.js?v=20261102w"></script>
+  <script src="js/huevos/09-almeria.js?v=20261102w"></script>
+  <script src="js/huevos/10-fiebre-del-oro.js?v=20261102w"></script>
+  <script src="js/huevos/11-ciudad-fantasma.js?v=20261102w"></script>
+  <script src="js/huevos/12-black-bart.js?v=20261102w"></script>
+  <script src="js/huevos/13-butch-y-sundance.js?v=20261102w"></script>
+  <script src="js/huevos/final.js?v=20261102w"></script>
+  <script src="js/companero.js?v=20261102w"></script>
+  <script src="js/sonido.js?v=20261102w"></script>
+  <script src="js/inicio.js?v=20261102w"></script>
+</body>
+</html>
